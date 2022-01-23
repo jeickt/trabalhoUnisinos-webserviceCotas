@@ -42,8 +42,8 @@ public class Candidato implements Serializable {
 	private Set<String> cotasAConcorrer = new HashSet<>();
 	
 	@ElementCollection
-	private Map<Integer, Boolean> chamadasConcorridas = new HashMap<Integer, Boolean>() 
-	{{put(1, false); put(2, false); put(3, false); put(4, false);}};
+	private Map<Integer, String> chamadasConcorridas = new HashMap<Integer, String>() 
+	{{put(1, null); put(2, null); put(3, null); put(4, null);}};
 	
 	public Candidato() {
 	}
@@ -186,7 +186,7 @@ public class Candidato implements Serializable {
 		return cotasAConcorrer;
 	}
 
-	public Map<Integer, Boolean> getChamadasConcorridas() {
+	public Map<Integer, String> getChamadasConcorridas() {
 		return chamadasConcorridas;
 	}
 

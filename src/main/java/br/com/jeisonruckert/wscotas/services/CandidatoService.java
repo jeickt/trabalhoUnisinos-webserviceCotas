@@ -6,7 +6,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -30,7 +32,7 @@ public class CandidatoService {
 	Integer[] vagasPorCota = new Integer[11];
 
 	private final CandidatoRepository repo;
-	
+
 	private final CotaService cotaService;
 
 	public CandidatoService(CandidatoRepository repository, CotaService cotaService) {
@@ -80,16 +82,51 @@ public class CandidatoService {
 				sc.close();
 			}
 		}
-		
+
 		return curso;
 	}
-	
+
 	public List<Candidato> generateList(Integer id) {
-		return null;
+		List<Candidato> listaDeChamada = new ArrayList<>();
+		List<Candidato> candidatos = repo.findByCursoId(id);
+		System.out.println(candidatos);
+		Curso curso = candidatos.get(0).getCurso();
+
+		for (Cota cota : curso.getCotas()) {
+			gerarListaDeChamadaRecursivamente(id, listaDeChamada, candidatos, curso, cota, cota.getCodigo());
+		}
+		return listaDeChamada;
 	}
-	
+
+	private void gerarListaDeChamadaRecursivamente(Integer id, List<Candidato> listaDeChamada,
+			List<Candidato> candidatos, Curso curso, Cota cota, String tipoDaCota) {
+		int posicao = 0;
+		List<Candidato> candidatosDaCota = candidatos.stream()
+				.filter(c -> c.getCotasAConcorrer().contains(cota.getCodigo())).collect(Collectors.toList());
+		candidatosDaCota.sort((a, b) -> a.getPosicao() - b.getPosicao());
+
+		while (cota.getVagas() > 0 && posicao < candidatosDaCota.size()) {
+			if (!listaDeChamada.contains(candidatosDaCota.get(posicao))
+					&& candidatosDaCota.get(posicao).getConcorrenteAtivo()) {
+				listaDeChamada.add(candidatosDaCota.get(posicao));
+				candidatosDaCota.get(posicao).getChamadasConcorridas().put(id, tipoDaCota);
+				posicao++;
+				cota.setVagas(cota.getVagas() - 1);
+			} else {
+				posicao++;
+			}
+		}
+		if (cota.getVagas() > 0) {
+			Optional<Cota> novaCota = curso.getCotas().stream().filter(c -> c.getId() == cota.getId() - 1).findFirst();
+			if (!novaCota.isEmpty()) {
+				novaCota.get().setVagas(cota.getVagas());
+				gerarListaDeChamadaRecursivamente(id, listaDeChamada, candidatos, curso, novaCota.get(), tipoDaCota);
+			}
+		}
+	}
+
 	public void insertResultFile(byte[] csvFile, Integer id) {
-		
+
 	}
 
 	private Candidato createCandidato(CandidatoDTO obj, Curso curso) {
