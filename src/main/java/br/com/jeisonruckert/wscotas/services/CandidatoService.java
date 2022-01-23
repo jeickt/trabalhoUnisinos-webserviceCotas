@@ -86,19 +86,36 @@ public class CandidatoService {
 		return curso;
 	}
 
-	public List<Candidato> generateList(Integer id) {
+	public List<Candidato> generateList(Integer cursoId, Integer chamadaId) {
 		List<Candidato> listaDeChamada = new ArrayList<>();
-		List<Candidato> candidatos = repo.findByCursoId(id);
+		List<Candidato> candidatos = repo.findByCursoId(cursoId);
 		System.out.println(candidatos);
 		Curso curso = candidatos.get(0).getCurso();
 
 		for (Cota cota : curso.getCotas()) {
-			gerarListaDeChamadaRecursivamente(id, listaDeChamada, candidatos, curso, cota, cota.getCodigo());
+			gerarListaDeChamadaRecursivamente(cursoId, listaDeChamada, candidatos, curso, cota, cota.getCodigo());
 		}
-		return listaDeChamada;
+		for (Candidato candidato : listaDeChamada) {
+			repo.save(candidato);
+		}
+
+		return candidatos.stream().filter(c -> c.getChamadasConcorridas().get(chamadaId) != null)
+				.collect(Collectors.toList());
 	}
 
-	private void gerarListaDeChamadaRecursivamente(Integer id, List<Candidato> listaDeChamada,
+	public List<Candidato> retrieveList(Integer cursoId, Integer chamadaId) {
+		List<Candidato> candidatos = repo.findByCursoId(cursoId);
+		return candidatos.stream().filter(c -> c.getChamadasConcorridas().get(chamadaId) != null)
+				.collect(Collectors.toList());
+	}
+	
+	public List<Candidato> enrolledList(Integer cursoId) {
+		List<Candidato> candidatos = repo.findByCursoId(cursoId);
+		return candidatos.stream().filter(c -> c.getMatriculado() == true)
+				.collect(Collectors.toList());
+	}
+
+	private void gerarListaDeChamadaRecursivamente(Integer chamadaId, List<Candidato> listaDeChamada,
 			List<Candidato> candidatos, Curso curso, Cota cota, String tipoDaCota) {
 		int posicao = 0;
 		List<Candidato> candidatosDaCota = candidatos.stream()
@@ -109,7 +126,7 @@ public class CandidatoService {
 			if (!listaDeChamada.contains(candidatosDaCota.get(posicao))
 					&& candidatosDaCota.get(posicao).getConcorrenteAtivo()) {
 				listaDeChamada.add(candidatosDaCota.get(posicao));
-				candidatosDaCota.get(posicao).getChamadasConcorridas().put(id, tipoDaCota);
+				candidatosDaCota.get(posicao).getChamadasConcorridas().put(chamadaId, tipoDaCota);
 				posicao++;
 				cota.setVagas(cota.getVagas() - 1);
 			} else {
@@ -120,13 +137,16 @@ public class CandidatoService {
 			Optional<Cota> novaCota = curso.getCotas().stream().filter(c -> c.getId() == cota.getId() - 1).findFirst();
 			if (!novaCota.isEmpty()) {
 				novaCota.get().setVagas(cota.getVagas());
-				gerarListaDeChamadaRecursivamente(id, listaDeChamada, candidatos, curso, novaCota.get(), tipoDaCota);
+				gerarListaDeChamadaRecursivamente(chamadaId, listaDeChamada, candidatos, curso, novaCota.get(),
+						tipoDaCota);
 			}
 		}
 	}
 
-	public void insertResultFile(byte[] csvFile, Integer id) {
-
+	public void insertResultFile(List<Candidato> candidatos) {
+		for (Candidato candidato : candidatos) {
+			repo.save(candidato);
+		}
 	}
 
 	private Candidato createCandidato(CandidatoDTO obj, Curso curso) {
@@ -229,18 +249,12 @@ public class CandidatoService {
 		switch (candidato.getCotaDeInscricao()) {
 		case 1:
 			candidato.getCotasAConcorrer().add("C1");
-			candidato.setCotaRendaInferior(false);
-			candidato.setCotaPretoPardo(false);
-			candidato.setCotaIndigena(false);
-			candidato.setCotaPCD(false);
-			candidato.setCotaEscolaPublica(false);
 			break;
 		case 2:
 			candidato.getCotasAConcorrer()
 					.addAll(Arrays.asList("C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8", "C9", "C10", "C11"));
 			candidato.setCotaRendaInferior(true);
 			candidato.setCotaPretoPardo(true);
-			candidato.setCotaIndigena(false);
 			candidato.setCotaPCD(true);
 			candidato.setCotaEscolaPublica(true);
 			break;
@@ -248,79 +262,51 @@ public class CandidatoService {
 			candidato.getCotasAConcorrer().addAll(Arrays.asList("C1", "C3", "C5", "C7", "C9", "C11"));
 			candidato.setCotaRendaInferior(true);
 			candidato.setCotaPretoPardo(true);
-			candidato.setCotaIndigena(false);
-			candidato.setCotaPCD(false);
 			candidato.setCotaEscolaPublica(true);
 			break;
 		case 4:
 			candidato.getCotasAConcorrer().addAll(Arrays.asList("C1", "C4", "C5", "C8", "C9", "C10"));
 			candidato.setCotaRendaInferior(true);
-			candidato.setCotaPretoPardo(false);
-			candidato.setCotaIndigena(false);
 			candidato.setCotaPCD(true);
 			candidato.setCotaEscolaPublica(true);
 			break;
 		case 5:
 			candidato.getCotasAConcorrer().addAll(Arrays.asList("C1", "C5", "C9"));
 			candidato.setCotaRendaInferior(true);
-			candidato.setCotaPretoPardo(false);
-			candidato.setCotaIndigena(false);
-			candidato.setCotaPCD(false);
 			candidato.setCotaEscolaPublica(true);
 			break;
 		case 6:
 			candidato.getCotasAConcorrer().addAll(Arrays.asList("C1", "C6", "C7", "C8", "C9", "C10", "C11"));
-			candidato.setCotaRendaInferior(false);
 			candidato.setCotaPretoPardo(true);
-			candidato.setCotaIndigena(false);
 			candidato.setCotaPCD(true);
 			candidato.setCotaEscolaPublica(true);
 			break;
 		case 7:
 			candidato.getCotasAConcorrer().addAll(Arrays.asList("C1", "C7", "C9", "C11"));
-			candidato.setCotaRendaInferior(false);
 			candidato.setCotaPretoPardo(true);
-			candidato.setCotaIndigena(false);
-			candidato.setCotaPCD(false);
 			candidato.setCotaEscolaPublica(true);
 			break;
 		case 8:
 			candidato.getCotasAConcorrer().addAll(Arrays.asList("C1", "C8", "C9", "C10"));
-			candidato.setCotaRendaInferior(false);
-			candidato.setCotaPretoPardo(false);
-			candidato.setCotaIndigena(false);
 			candidato.setCotaPCD(true);
 			candidato.setCotaEscolaPublica(true);
 			break;
 		case 9:
 			candidato.getCotasAConcorrer().addAll(Arrays.asList("C1", "C9"));
-			candidato.setCotaRendaInferior(false);
-			candidato.setCotaPretoPardo(false);
-			candidato.setCotaIndigena(false);
-			candidato.setCotaPCD(false);
 			candidato.setCotaEscolaPublica(true);
 			break;
 		case 10:
 			candidato.getCotasAConcorrer().addAll(Arrays.asList("C1", "C10"));
-			candidato.setCotaRendaInferior(false);
-			candidato.setCotaPretoPardo(false);
-			candidato.setCotaIndigena(false);
 			candidato.setCotaPCD(true);
-			candidato.setCotaEscolaPublica(false);
 			break;
 		case 11:
 			candidato.getCotasAConcorrer().addAll(Arrays.asList("C1", "C11"));
-			candidato.setCotaRendaInferior(false);
 			candidato.setCotaPretoPardo(true);
-			candidato.setCotaIndigena(false);
-			candidato.setCotaPCD(false);
-			candidato.setCotaEscolaPublica(false);
 			break;
 		case 12:
 			candidato.getCotasAConcorrer()
 					.addAll(Arrays.asList("C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8", "C9", "C10"));
 			candidato.setCotaRendaInferior(true);
-			candidato.setCotaPretoPardo(false);
 			candidato.setCotaIndigena(true);
 			candidato.setCotaPCD(true);
 			candidato.setCotaEscolaPublica(true);
@@ -328,25 +314,18 @@ public class CandidatoService {
 		case 13:
 			candidato.getCotasAConcorrer().addAll(Arrays.asList("C1", "C3", "C5", "C7", "C9"));
 			candidato.setCotaRendaInferior(true);
-			candidato.setCotaPretoPardo(false);
 			candidato.setCotaIndigena(true);
-			candidato.setCotaPCD(false);
 			candidato.setCotaEscolaPublica(true);
 			break;
 		case 16:
 			candidato.getCotasAConcorrer().addAll(Arrays.asList("C1", "C6", "C7", "C8", "C9", "C10"));
-			candidato.setCotaRendaInferior(false);
-			candidato.setCotaPretoPardo(false);
 			candidato.setCotaIndigena(true);
 			candidato.setCotaPCD(true);
 			candidato.setCotaEscolaPublica(true);
 			break;
 		case 17:
 			candidato.getCotasAConcorrer().addAll(Arrays.asList("C1", "C7", "C9"));
-			candidato.setCotaRendaInferior(false);
-			candidato.setCotaPretoPardo(false);
 			candidato.setCotaIndigena(true);
-			candidato.setCotaPCD(false);
 			candidato.setCotaEscolaPublica(true);
 			break;
 		}

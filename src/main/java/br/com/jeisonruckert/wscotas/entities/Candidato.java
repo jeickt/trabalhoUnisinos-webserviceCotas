@@ -60,6 +60,11 @@ public class Candidato implements Serializable {
 		this.concorrenteAtivo = true;
 		this.matriculado = false;
 		this.curso = curso;
+		this.cotaEscolaPublica = false;
+		this.cotaRendaInferior = false;
+		this.cotaPretoPardo = false;
+		this.cotaIndigena = false;
+		this.cotaPCD = false;
 	}
 
 	public String getId() {
