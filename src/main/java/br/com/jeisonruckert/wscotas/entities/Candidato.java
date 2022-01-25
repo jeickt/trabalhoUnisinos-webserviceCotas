@@ -1,12 +1,24 @@
 package br.com.jeisonruckert.wscotas.entities;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "tb_candidato")
 public class Candidato implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
+	@Id
 	private String id;
 	private String nome;
 	private String campus;
@@ -22,10 +34,16 @@ public class Candidato implements Serializable {
 	private Boolean cotaIndigena;
 	private Boolean cotaPCD;
 	
+	@ManyToOne
+	@JoinColumn(name = "curso_id")
 	private Curso curso;
 	
-	private List<Integer> cotasAConcorrer = new ArrayList<>();
-	private Boolean[] chamadasConcorridas = new Boolean[4];
+	@ElementCollection(targetClass=String.class)
+	private Set<String> cotasAConcorrer = new HashSet<>();
+	
+	@ElementCollection
+	private Map<Integer, Boolean> chamadasConcorridas = new HashMap<Integer, Boolean>() 
+	{{put(1, false); put(2, false); put(3, false); put(4, false);}};
 	
 	public Candidato() {
 	}
@@ -40,6 +58,7 @@ public class Candidato implements Serializable {
 		this.pontuacao = nivelDoCurso.equals("SUPERIOR") ? pontuacao : pontuacao * 2.5;
 		this.posicao = posicao;
 		this.concorrenteAtivo = true;
+		this.matriculado = false;
 		this.curso = curso;
 	}
 
@@ -163,11 +182,11 @@ public class Candidato implements Serializable {
 		this.curso = curso;
 	}
 
-	public List<Integer> getCotasAConcorrer() {
+	public Set<String> getCotasAConcorrer() {
 		return cotasAConcorrer;
 	}
 
-	public Boolean[] getChamadasConcorridas() {
+	public Map<Integer, Boolean> getChamadasConcorridas() {
 		return chamadasConcorridas;
 	}
 
