@@ -15,12 +15,23 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import br.com.jeisonruckert.wscotas.services.exceptions.CourseWithoutCandidatesException;
 import br.com.jeisonruckert.wscotas.services.exceptions.FileReaderException;
 import br.com.jeisonruckert.wscotas.services.exceptions.InvalidNumberOfCourseVacancyException;
 import br.com.jeisonruckert.wscotas.services.exceptions.ResourceNotFoundException;
 
 @ControllerAdvice
 public class ResourceExceptionHandler {
+	
+	@ExceptionHandler(CourseWithoutCandidatesException.class)
+	public ResponseEntity<StandardError> iO(CourseWithoutCandidatesException e, HttpServletRequest request) {
+		Map<String, String> errors = new HashMap<>();
+		String error = "Course without candidates.";
+		HttpStatus status = HttpStatus.BAD_REQUEST;
+		errors.put(error, e.getMessage());
+		StandardError err = new StandardError(Instant.now(), status.value(), errors, request.getRequestURI());
+		return ResponseEntity.status(status).body(err);
+	}
 	
 	@ExceptionHandler(FileReaderException.class)
 	public ResponseEntity<StandardError> iO(FileReaderException e, HttpServletRequest request) {
