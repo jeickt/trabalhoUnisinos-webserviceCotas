@@ -34,10 +34,13 @@ public class CandidatoService {
 	private final CandidatoRepository repo;
 
 	private final CotaService cotaService;
+	
+	private final CursoService cursoService;
 
-	public CandidatoService(CandidatoRepository repository, CotaService cotaService) {
+	public CandidatoService(CandidatoRepository repository, CotaService cotaService, CursoService cursoService) {
 		this.repo = repository;
 		this.cotaService = cotaService;
+		this.cursoService = cursoService;
 	}
 
 	public Curso insertMainFile(byte[] csvFile) {
@@ -75,7 +78,7 @@ public class CandidatoService {
 				Candidato candidato = createCandidato(candDTO, curso);
 				repo.save(candidato);
 			}
-		} catch (IllegalStateException | IOException e) {
+		} catch (NumberFormatException | ArrayIndexOutOfBoundsException | IllegalStateException | IOException e) {
 			throw new FileReaderException("Erro na leitura de arquivo");
 		} finally {
 			if (sc != null) {
@@ -87,6 +90,7 @@ public class CandidatoService {
 	}
 
 	public List<Candidato> generateList(Integer cursoId, Integer chamadaId) {
+		cursoService.findById(cursoId);
 		List<Candidato> listaDeChamada = new ArrayList<>();
 		List<Candidato> candidatos = repo.findByCursoId(cursoId);
 		System.out.println(candidatos);
@@ -104,15 +108,31 @@ public class CandidatoService {
 	}
 
 	public List<Candidato> retrieveList(Integer cursoId, Integer chamadaId) {
+		cursoService.findById(cursoId);
 		List<Candidato> candidatos = repo.findByCursoId(cursoId);
 		return candidatos.stream().filter(c -> c.getChamadasConcorridas().get(chamadaId) != null)
 				.collect(Collectors.toList());
 	}
 	
 	public List<Candidato> enrolledList(Integer cursoId) {
+		cursoService.findById(cursoId);
 		List<Candidato> candidatos = repo.findByCursoId(cursoId);
 		return candidatos.stream().filter(c -> c.getMatriculado() == true)
 				.collect(Collectors.toList());
+	}
+	
+	public void insertResultFile(List<Candidato> candidatos) {
+		for (Candidato candidato : candidatos) {
+			repo.save(candidato);
+		}
+	}
+	
+	public void delete(Integer cursoId) {
+		cursoService.findById(cursoId);
+		List<Candidato> candidatos = repo.findByCursoId(cursoId);
+		for (Candidato candidato : candidatos) {
+			repo.delete(candidato);
+		}
 	}
 
 	private void gerarListaDeChamadaRecursivamente(Integer chamadaId, List<Candidato> listaDeChamada,
@@ -140,12 +160,6 @@ public class CandidatoService {
 				gerarListaDeChamadaRecursivamente(chamadaId, listaDeChamada, candidatos, curso, novaCota.get(),
 						tipoDaCota);
 			}
-		}
-	}
-
-	public void insertResultFile(List<Candidato> candidatos) {
-		for (Candidato candidato : candidatos) {
-			repo.save(candidato);
 		}
 	}
 
