@@ -1,14 +1,20 @@
 package br.com.jeisonruckert.wscotas.entities;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 @Entity
+@Table(name = "tb_candidato")
 public class Candidato implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
@@ -28,11 +34,16 @@ public class Candidato implements Serializable {
 	private Boolean cotaIndigena;
 	private Boolean cotaPCD;
 	
+	@ManyToOne
+	@JoinColumn(name = "curso_id")
 	private Curso curso;
 	
+	@ElementCollection(targetClass=String.class)
+	private Set<String> cotasAConcorrer = new HashSet<>();
+	
 	@ElementCollection
-	private List<Integer> cotasAConcorrer = new ArrayList<>();
-	private Boolean[] chamadasConcorridas = new Boolean[4];
+	private Map<Integer, String> chamadasConcorridas = new HashMap<Integer, String>() 
+	{{put(1, null); put(2, null); put(3, null); put(4, null);}};
 	
 	public Candidato() {
 	}
@@ -47,7 +58,13 @@ public class Candidato implements Serializable {
 		this.pontuacao = nivelDoCurso.equals("SUPERIOR") ? pontuacao : pontuacao * 2.5;
 		this.posicao = posicao;
 		this.concorrenteAtivo = true;
+		this.matriculado = false;
 		this.curso = curso;
+		this.cotaEscolaPublica = false;
+		this.cotaRendaInferior = false;
+		this.cotaPretoPardo = false;
+		this.cotaIndigena = false;
+		this.cotaPCD = false;
 	}
 
 	public String getId() {
@@ -170,11 +187,11 @@ public class Candidato implements Serializable {
 		this.curso = curso;
 	}
 
-	public List<Integer> getCotasAConcorrer() {
+	public Set<String> getCotasAConcorrer() {
 		return cotasAConcorrer;
 	}
 
-	public Boolean[] getChamadasConcorridas() {
+	public Map<Integer, String> getChamadasConcorridas() {
 		return chamadasConcorridas;
 	}
 

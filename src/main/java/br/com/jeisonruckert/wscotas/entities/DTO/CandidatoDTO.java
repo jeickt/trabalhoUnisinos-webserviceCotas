@@ -1,21 +1,34 @@
 package br.com.jeisonruckert.wscotas.entities.DTO;
 
+import javax.persistence.Id;
+import javax.validation.constraints.NotBlank;
+
 public class CandidatoDTO {
 
+	@Id
 	private String id;
+	@NotBlank(message="O valor não pode ser nulo ou vazio.")
 	private String nome;
+	@NotBlank(message="O valor não pode ser nulo ou vazio.")
 	private String campus;
+	@NotBlank(message="O valor não pode ser nulo ou vazio.")
 	private String nivelDoCurso;
+	@NotBlank(message="O valor não pode ser nulo ou vazio.")
 	private String curso;
+	@NotBlank(message="O valor não pode ser nulo ou vazio.")
 	private Integer cotaDeInscricao;
+	@NotBlank(message="O valor não pode ser nulo ou vazio.")
 	private Double pontuacao;
+	@NotBlank(message="O valor não pode ser nulo ou vazio.")
 	private Integer posicao;
+	@NotBlank(message="O valor não pode ser nulo ou vazio.")
+	private Integer vagasDoCurso;
 	
 	public CandidatoDTO() {
 	}
 
 	public CandidatoDTO(String id, String nome, String campus, String nivelDoCurso, String curso,
-			Integer cotaDeInscricao, Double pontuacao, Integer posicao) {
+			Integer cotaDeInscricao, Double pontuacao, Integer posicao, Integer vagasDoCurso) {
 		super();
 		this.id = id;
 		this.nome = nome;
@@ -25,6 +38,7 @@ public class CandidatoDTO {
 		this.cotaDeInscricao = cotaDeInscricao;
 		this.pontuacao = pontuacao;
 		this.posicao = posicao;
+		this.vagasDoCurso = vagasDoCurso;
 	}
 
 	public String getId() {
@@ -89,6 +103,14 @@ public class CandidatoDTO {
 
 	public void setPosicao(Integer posicao) {
 		this.posicao = posicao;
+	}
+
+	public Integer getVagasDoCurso() {
+		return vagasDoCurso;
+	}
+
+	public void setVagasDoCurso(Integer vagasDoCurso) {
+		this.vagasDoCurso = vagasDoCurso;
 	}
 	
 }
