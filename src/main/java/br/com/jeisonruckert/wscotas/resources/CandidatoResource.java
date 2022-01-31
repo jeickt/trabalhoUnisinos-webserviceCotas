@@ -32,6 +32,9 @@ public class CandidatoResource {
 	public ResponseEntity<List<Candidato>> generateList(@RequestParam(value = "cursoId") Integer cursoId,
 			@RequestParam(value = "chamadaId") Integer chamadaId) {
 		List<Candidato> chamada = service.generateList(cursoId, chamadaId);
+		for (Candidato cand : chamada) {
+			System.out.println(cand);
+		}
 		return ResponseEntity.ok().body(chamada);
 	}
 	
