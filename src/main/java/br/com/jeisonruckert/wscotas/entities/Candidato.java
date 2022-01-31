@@ -45,7 +45,6 @@ public class Candidato implements Serializable {
 	@ElementCollection(targetClass = String.class)
 	private Set<String> cotasAConcorrer = new HashSet<>();
 
-	@JsonIgnore
 	@ElementCollection
 	private Map<Integer, String> chamadasConcorridas = new HashMap<Integer, String>() {
 		private static final long serialVersionUID = 1L;

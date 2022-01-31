@@ -99,11 +99,15 @@ public class CandidatoService {
 		for (Cota cota : curso.getCotas()) {
 			gerarListaDeChamadaRecursivamente(cursoId, listaDeChamada, candidatos, curso, cota, cota.getCodigo());
 		}
+		System.out.println("-----------------------------------------------------------------------");
+		System.out.println(candidatos);
 		for (Candidato candidato : listaDeChamada) {
 			repo.save(candidato);
 		}
 		
 		candidatos = repo.findByCursoId(cursoId);
+		System.out.println("-----------------------------------------------------------------------");
+		System.out.println(candidatos);
 		System.out.println("-----------------------------------------------------------------------");
 		candidatos = candidatos.stream().filter(c -> c.getChamadasConcorridas().get(chamadaId) != null)
 				.collect(Collectors.toList());
