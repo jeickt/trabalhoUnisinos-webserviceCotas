@@ -17,7 +17,7 @@ import javax.persistence.Table;
 @Table(name = "tb_candidato")
 public class Candidato implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
+
 	@Id
 	private String id;
 	private String nome;
@@ -33,18 +33,25 @@ public class Candidato implements Serializable {
 	private Boolean cotaPretoPardo;
 	private Boolean cotaIndigena;
 	private Boolean cotaPCD;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "curso_id")
 	private Curso curso;
-	
-	@ElementCollection(targetClass=String.class)
+
+	@ElementCollection(targetClass = String.class)
 	private Set<String> cotasAConcorrer = new HashSet<>();
-	
+
 	@ElementCollection
-	private Map<Integer, String> chamadasConcorridas = new HashMap<Integer, String>() 
-	{{put(1, null); put(2, null); put(3, null); put(4, null);}};
-	
+	private Map<Integer, String> chamadasConcorridas = new HashMap<Integer, String>() {
+		private static final long serialVersionUID = 1L;
+		{
+			put(1, null);
+			put(2, null);
+			put(3, null);
+			put(4, null);
+		}
+	};
+
 	public Candidato() {
 	}
 
@@ -197,10 +204,8 @@ public class Candidato implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Candidato [id=" + id + ", nome=" + nome + ", campus=" + campus + ", curso=" + curso +
-				", cotaDeInscricao=" + cotaDeInscricao	+  "]";
+		return "Candidato [id=" + id + ", nome=" + nome + ", campus=" + campus + ", curso=" + curso
+				+ ", cotaDeInscricao=" + cotaDeInscricao + "]";
 	}
-	
-	
 
 }
