@@ -93,26 +93,17 @@ public class CandidatoService {
 		cursoService.findById(cursoId);
 		List<Candidato> listaDeChamada = new ArrayList<>();
 		List<Candidato> candidatos = repo.findByCursoId(cursoId);
-		System.out.println(candidatos);
 		Curso curso = candidatos.get(0).getCurso();
 
 		for (Cota cota : curso.getCotas()) {
-			gerarListaDeChamadaRecursivamente(cursoId, listaDeChamada, candidatos, curso, cota, cota.getCodigo());
+			gerarListaDeChamadaRecursivamente(chamadaId, listaDeChamada, candidatos, curso, cota, cota.getCodigo());
 		}
-		System.out.println("-----------------------------------------------------------------------");
-		System.out.println(candidatos);
 		for (Candidato candidato : listaDeChamada) {
 			repo.save(candidato);
 		}
-		
-		candidatos = repo.findByCursoId(cursoId);
-		System.out.println("-----------------------------------------------------------------------");
-		System.out.println(candidatos);
-		System.out.println("-----------------------------------------------------------------------");
-		candidatos = candidatos.stream().filter(c -> c.getChamadasConcorridas().get(chamadaId) != null)
-				.collect(Collectors.toList());
-		System.out.println(candidatos);
-		return candidatos;
+
+		return candidatos.stream().filter(c -> c.getChamadasConcorridas().get(chamadaId) != null 
+				&& c.getCurso().getId() == cursoId).collect(Collectors.toList());
 	}
 
 	public List<Candidato> retrieveList(Integer cursoId, Integer chamadaId) {
