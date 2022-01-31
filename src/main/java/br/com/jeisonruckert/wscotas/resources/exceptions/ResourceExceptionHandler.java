@@ -35,7 +35,7 @@ public class ResourceExceptionHandler {
 	@ExceptionHandler(HttpRequestMethodNotSupportedException.class)
 	public ResponseEntity<StandardError> negativeValue(HttpRequestMethodNotSupportedException e, HttpServletRequest request) {
 		Map<String, String> errors = new HashMap<>();
-		String error = "Invalid number of course vacancy.";
+		String error = "Request method not supported.";
 		HttpStatus status = HttpStatus.METHOD_NOT_ALLOWED;
 		errors.put(error, e.getMessage());
 		StandardError err = new StandardError(Instant.now(), status.value(), errors, request.getRequestURI());
