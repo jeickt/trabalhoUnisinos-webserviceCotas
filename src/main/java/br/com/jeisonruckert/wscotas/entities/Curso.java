@@ -26,6 +26,10 @@ public class Curso implements Serializable {
 	@JsonIgnore
 	@OneToMany(mappedBy="curso")
 	private List<Cota> cotas = new ArrayList<>();
+	
+	@JsonIgnore
+	@OneToMany(mappedBy="curso")
+	private List<Candidato> candidatos = new ArrayList<>();
 
 	public Curso() {
 	}
@@ -52,6 +56,10 @@ public class Curso implements Serializable {
 
 	public List<Cota> getCotas() {
 		return cotas;
+	}
+	
+	public List<Candidato> getCandidatos() {
+		return candidatos;
 	}
 
 }
