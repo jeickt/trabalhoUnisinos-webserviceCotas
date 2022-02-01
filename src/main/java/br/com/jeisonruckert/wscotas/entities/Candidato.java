@@ -13,8 +13,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 @Entity
 @Table(name = "tb_candidato")
 public class Candidato implements Serializable {
@@ -36,12 +34,10 @@ public class Candidato implements Serializable {
 	private Boolean cotaIndigena;
 	private Boolean cotaPCD;
 
-	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name = "curso_id")
 	private Curso curso;
 
-	@JsonIgnore
 	@ElementCollection(targetClass = String.class)
 	private Set<String> cotasAConcorrer = new HashSet<>();
 
