@@ -106,7 +106,6 @@ public class CandidatoService {
 		}
 		System.out.println(listaDeChamada);
 		System.out.println("---------------------------------------------");
-		candidatos = repo.findByCursoId(cursoId);
 		System.out.println(candidatos);
 		System.out.println("---------------------------------------------");
 		candidatos = candidatos.stream().filter(c -> c.getChamadasConcorridas().get(chamadaId) != null)
