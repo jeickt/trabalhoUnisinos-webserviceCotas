@@ -101,9 +101,12 @@ public class CandidatoService {
 		for (Candidato candidato : listaDeChamada) {
 			repo.save(candidato);
 		}
-
-		return candidatos.stream().filter(c -> c.getChamadasConcorridas().get(chamadaId) != null 
-				&& c.getCurso().getId() == cursoId).collect(Collectors.toList());
+		System.out.println(candidatos);
+		System.out.println("---------------------------------------------");
+		candidatos = candidatos.stream().filter(c -> c.getChamadasConcorridas().get(chamadaId) != null)
+				.collect(Collectors.toList());
+		System.out.println(candidatos);
+		return candidatos;
 	}
 
 	public List<Candidato> retrieveList(Integer cursoId, Integer chamadaId) {
