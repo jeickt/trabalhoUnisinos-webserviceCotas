@@ -206,4 +206,9 @@ public class Candidato implements Serializable {
 		return chamadasConcorridas;
 	}
 
+	@Override
+	public String toString() {
+		return "Candidato [id=" + id + ", chamadasConcorridas=" + chamadasConcorridas + "]";
+	}
+
 }
