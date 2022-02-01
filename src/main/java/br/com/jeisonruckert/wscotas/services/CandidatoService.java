@@ -93,9 +93,6 @@ public class CandidatoService {
 		cursoService.findById(cursoId);
 		List<Candidato> listaDeChamada = new ArrayList<>();
 		List<Candidato> candidatos = repo.findByCursoId(cursoId);
-		System.out.println(candidatos);
-		System.out.println(chamadaId);
-		System.out.println("---------------------------------------------");
 		Curso curso = candidatos.get(0).getCurso();
 
 		for (Cota cota : curso.getCotas()) {
@@ -104,13 +101,9 @@ public class CandidatoService {
 		for (Candidato candidato : listaDeChamada) {
 			repo.save(candidato);
 		}
-		System.out.println(listaDeChamada);
-		System.out.println("---------------------------------------------");
-		System.out.println(candidatos);
-		System.out.println("---------------------------------------------");
+		
 		candidatos = candidatos.stream().filter(c -> c.getChamadasConcorridas().get(chamadaId) != null)
 				.collect(Collectors.toList());
-		System.out.println(candidatos);
 		return candidatos;
 	}
 
