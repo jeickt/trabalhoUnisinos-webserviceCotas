@@ -101,6 +101,9 @@ public class CandidatoService {
 		for (Candidato candidato : listaDeChamada) {
 			repo.save(candidato);
 		}
+		System.out.println(listaDeChamada);
+		System.out.println("---------------------------------------------");
+		candidatos = repo.findByCursoId(cursoId);
 		System.out.println(candidatos);
 		System.out.println("---------------------------------------------");
 		candidatos = candidatos.stream().filter(c -> c.getChamadasConcorridas().get(chamadaId) != null)
@@ -147,8 +150,8 @@ public class CandidatoService {
 		while (cota.getVagas() > 0 && posicao < candidatosDaCota.size()) {
 			if (!listaDeChamada.contains(candidatosDaCota.get(posicao))
 					&& candidatosDaCota.get(posicao).getConcorrenteAtivo()) {
-				listaDeChamada.add(candidatosDaCota.get(posicao));
 				candidatosDaCota.get(posicao).getChamadasConcorridas().put(chamadaId, tipoDaCota);
+				listaDeChamada.add(candidatosDaCota.get(posicao));
 				posicao++;
 				cota.setVagas(cota.getVagas() - 1);
 			} else {
