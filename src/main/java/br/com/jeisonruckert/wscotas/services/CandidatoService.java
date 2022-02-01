@@ -93,6 +93,9 @@ public class CandidatoService {
 		cursoService.findById(cursoId);
 		List<Candidato> listaDeChamada = new ArrayList<>();
 		List<Candidato> candidatos = repo.findByCursoId(cursoId);
+		System.out.println(candidatos);
+		System.out.println(chamadaId);
+		System.out.println("---------------------------------------------");
 		Curso curso = candidatos.get(0).getCurso();
 
 		for (Cota cota : curso.getCotas()) {
