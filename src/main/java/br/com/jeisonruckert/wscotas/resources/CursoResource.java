@@ -25,13 +25,13 @@ public class CursoResource {
 	
 	@GetMapping
 	public ResponseEntity<List<Curso>> findAll() {
-		List<Curso> cursos = service.findAll();
+		List<Curso> cursos = service.encontrarTodos();
 		return ResponseEntity.ok().body(cursos);
 	}
 	
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<Curso> findById(@PathVariable Integer id) {
-		Curso curso = service.findById(id);
+		Curso curso = service.encontrarPorId(id);
 		return ResponseEntity.ok().body(curso);
 	}
 	

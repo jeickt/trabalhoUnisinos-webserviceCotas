@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -19,7 +20,7 @@ public class Curso implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
 	private String nome;
 	
@@ -60,6 +61,11 @@ public class Curso implements Serializable {
 	
 	public List<Candidato> getCandidatos() {
 		return candidatos;
+	}
+
+	@Override
+	public String toString() {
+		return "Curso [nome=" + nome + ", cotas=" + cotas + "]";
 	}
 
 }

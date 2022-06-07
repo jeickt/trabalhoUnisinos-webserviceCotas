@@ -20,13 +20,13 @@ public class CursoService {
 		this.repo = repository;
 	}
 	
-	public List<Curso> findAll() {
+	public List<Curso> encontrarTodos() {
 		List<Curso> cursos = repo.findAll();
 		cursos = cursos.stream().filter(c -> !c.getCandidatos().isEmpty()).collect(Collectors.toList());
 		return cursos;
 	}
 	
-	public Curso findById(Integer id) {
+	public Curso encontrarPorId(Integer id) {
 		Optional<Curso> curso = repo.findById(id);
 		if (curso.isEmpty()) {
 			throw new ResourceNotFoundException("Curso não encontrado.");
@@ -37,7 +37,7 @@ public class CursoService {
 		return curso.get();
 	}
 
-	public Curso save(Curso curso) {
+	public Curso salvar(Curso curso) {
 		return repo.save(curso);
 	}
 

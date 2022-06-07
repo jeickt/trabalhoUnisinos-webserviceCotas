@@ -83,4 +83,9 @@ public class Cota implements Serializable {
 		this.curso = curso;
 	}
 
+	@Override
+	public String toString() {
+		return "Cota [codigo=" + codigo + ", vagas=" + vagas + "]";
+	}
+
 }

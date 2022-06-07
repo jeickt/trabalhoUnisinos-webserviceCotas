@@ -27,7 +27,7 @@ public class Candidato implements Serializable {
 	private Double pontuacao;
 	private Integer posicao;
 	private Boolean concorrenteAtivo;
-	private Boolean matriculado;
+	private Integer matriculado;
 	private Boolean cotaEscolaPublica;
 	private Boolean cotaRendaInferior;
 	private Boolean cotaPretoPardo;
@@ -35,7 +35,7 @@ public class Candidato implements Serializable {
 	private Boolean cotaPCD;
 
 	@ManyToOne
-	@JoinColumn(name = "curso_id")
+	@JoinColumn(name="curso_id")
 	private Curso curso;
 
 	@ElementCollection(targetClass = String.class)
@@ -65,7 +65,7 @@ public class Candidato implements Serializable {
 		this.pontuacao = nivelDoCurso.equals("SUPERIOR") ? pontuacao : pontuacao * 2.5;
 		this.posicao = posicao;
 		this.concorrenteAtivo = true;
-		this.matriculado = false;
+		this.matriculado = 0;
 		this.curso = curso;
 		this.cotaEscolaPublica = false;
 		this.cotaRendaInferior = false;
@@ -138,11 +138,11 @@ public class Candidato implements Serializable {
 		this.concorrenteAtivo = concorrenteAtivo;
 	}
 
-	public Boolean getMatriculado() {
+	public Integer getMatriculado() {
 		return matriculado;
 	}
 
-	public void setMatriculado(Boolean matriculado) {
+	public void setMatriculado(Integer matriculado) {
 		this.matriculado = matriculado;
 	}
 

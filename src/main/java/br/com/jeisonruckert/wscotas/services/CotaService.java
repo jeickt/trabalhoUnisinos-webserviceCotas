@@ -14,7 +14,7 @@ public class CotaService {
 		this.repo = repository;
 	}
 
-	public Cota save(Cota cota) {
+	public Cota salvar(Cota cota) {
 		return repo.save(cota);
 	}
 

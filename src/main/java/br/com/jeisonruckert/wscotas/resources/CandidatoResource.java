@@ -21,7 +21,6 @@ import br.com.jeisonruckert.wscotas.services.CandidatoService;
 
 @RestController
 @RequestMapping(value = "/candidatos")
-@CrossOrigin(origins = "http://localhost:4200")
 public class CandidatoResource {
 	
 	private final CandidatoService service;
@@ -30,38 +29,45 @@ public class CandidatoResource {
 		this.service = service;
 	}
 	
+	@CrossOrigin(origins = "http://localhost:4200")
 	@GetMapping
 	public ResponseEntity<List<Candidato>> generateList(@RequestParam(value = "cursoId") Integer cursoId,
 			@RequestParam(value = "chamadaId") Integer chamadaId) {
-		List<Candidato> chamada = service.generateList(cursoId, chamadaId);
+		List<Candidato> chamada = service.prepararGeracaoDeLista(cursoId, chamadaId);
 		return ResponseEntity.ok().body(chamada);
 	}
 	
+	@CrossOrigin(origins = "http://localhost:4200")
 	@GetMapping(value = "/retrieveList")
 	public ResponseEntity<List<Candidato>> retrieveList(@RequestParam(value = "cursoId") Integer cursoId,
 			@RequestParam(value = "chamadaId") Integer chamadaId) {
-		List<Candidato> chamada = service.retrieveList(cursoId, chamadaId);
+		List<Candidato> chamada = service.recuperarListaDeChamada(cursoId, chamadaId);
 		return ResponseEntity.ok().body(chamada);
 	}
 	
+	@CrossOrigin(origins = "http://localhost:4200")
 	@GetMapping(value = "/enrolledList")
 	public ResponseEntity<List<Candidato>> enrolledList(@RequestParam(value = "cursoId") Integer cursoId) {
-		List<Candidato> matriculados = service.enrolledList(cursoId);
+		List<Candidato> matriculados = service.recuperarListaDeMatriculados(cursoId);
 		return ResponseEntity.ok().body(matriculados);
 	}
 	
+	@CrossOrigin(origins = "http://localhost:4200")
 	@PostMapping
 	public ResponseEntity<Curso> insertFile(@RequestBody byte[] csvFile) {
-		Curso curso = service.insertMainFile(csvFile);
+		Curso curso = service.insercaoDeArquivoPrincipal(csvFile);
 		return ResponseEntity.ok().body(curso);
 	}
 	
+	@CrossOrigin(origins = "http://localhost:4200")
 	@PutMapping
 	public ResponseEntity<List<Cota>> callResultFile(@RequestBody List<Candidato> candidatos) {
-		service.insertResultFile(candidatos);
+		System.out.println(candidatos);
+		service.inserirArquivoDeResultado(candidatos);
 		return ResponseEntity.noContent().build();
 	}
 	
+	@CrossOrigin(origins = "http://localhost:4200")
 	@DeleteMapping(value = "/{cursoId}")
 	public ResponseEntity<Void> delete(@PathVariable Integer cursoId) {
 		service.delete(cursoId);
